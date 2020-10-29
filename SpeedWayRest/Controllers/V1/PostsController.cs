@@ -21,16 +21,16 @@ namespace SpeedWayRest.Controllers
             _postServices = postServices;
         }
         [HttpGet(ApiRoutes.Posts.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var posts = _postServices.GetPosts();
+            var posts = await _postServices.GetPostsAsync();
             return Ok(posts);
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
-        public IActionResult Get([FromRoute]string postId)
+        public async Task<IActionResult> Get([FromRoute]int postId)
         {
-            var post = _postServices.GetPostById(postId);
+            var post = await _postServices.GetPostByIdAsync(postId);
             if (post == null)
                 return NotFound();
 
@@ -38,31 +38,29 @@ namespace SpeedWayRest.Controllers
         }
 
         [HttpPost(ApiRoutes.Posts.Create)]
-        public IActionResult Create([FromBody]CreatePostRequest post)
+        public async Task<IActionResult> Create([FromBody]CreatePostRequest post)
         {
-            var newPost = new Post(post.Id,post.Name);
-            if (string.IsNullOrEmpty(newPost.Id))
-            {
-                newPost.Id = Guid.NewGuid().ToString();
-            }
-            _postServices.CreatePost(newPost);
+            var newPost = new Post(post.Name);
+           
+            var createdPost = await _postServices.CreatePostAsync(newPost);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id);
+            var locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", createdPost.Id.ToString());
 
-            var postResponse = new CreatePostResponse() { Id = post.Id , Name = post.Name};
+            var postResponse = new CreatePostResponse() { Id = createdPost.Id , Name = post.Name};
             return Created(locationUri, postResponse);
         }
 
         [HttpPut(ApiRoutes.Posts.Update)]
-        public IActionResult Update([FromRoute]string postId, [FromBody]UpdatePostRequest request)
+        public async Task<IActionResult> Update([FromRoute]int postId, [FromBody]UpdatePostRequest request)
         {
-            if (string.IsNullOrEmpty(postId))
+            if(!(postId > 0))
             {
-                return BadRequest("Post Id is Empty");
+                return BadRequest("Post Not Found");
             }
-            Post updatedPost = new Post(postId, request.Name);
-            var isUpdated = _postServices.UpdatePost(updatedPost);
+            Post updatedPost = new Post(request.Name);
+            updatedPost.Id = postId;
+            var isUpdated = await _postServices.UpdatePostAsync(updatedPost);
             if (isUpdated)
             {
                 return Ok(updatedPost);
@@ -72,14 +70,15 @@ namespace SpeedWayRest.Controllers
         }
 
         [HttpDelete(ApiRoutes.Posts.Delete)]
-        public IActionResult Delete([FromRoute]string postId)
+        public async Task<IActionResult> Delete([FromRoute]int postId)
         {
-            if (string.IsNullOrEmpty(postId))
+
+            if (!(postId > 0))
             {
                 return BadRequest("Post Id is Empty");
             }
 
-            var isDeleted = _postServices.DeletePost(postId);
+            var isDeleted = await _postServices.DeletePost(postId);
             if (isDeleted)
                 return NoContent();
 

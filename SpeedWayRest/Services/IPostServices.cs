@@ -8,10 +8,10 @@ namespace SpeedWayRest.Services
 {
     public interface IPostServices
     {
-        List<Post> GetPosts();
-        Post GetPostById(string postId);
-        void CreatePost(Post post);
-        bool UpdatePost(Post postToUpdate);
-        bool DeletePost(string postId);
+        Task<List<Post>> GetPostsAsync();
+        Task<Post> GetPostByIdAsync(int postId);
+        Task<Post> CreatePostAsync(Post post);
+        Task<bool> UpdatePostAsync(Post postToUpdate);
+        Task<bool> DeletePost(int postId);
     }
 }

@@ -23,7 +23,7 @@ namespace SpeedWayRest.Installers
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<DataContext>();
 
-            services.AddSingleton<IPostServices, PostServices>();
+            services.AddScoped<IPostServices, PostServices>();
         }
     }
 }

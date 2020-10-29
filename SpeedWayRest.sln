@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedWayRest", "SpeedWayRest\SpeedWayRest.csproj", "{F27FDB8C-6EB7-4464-AA16-03020858FA40}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F27FDB8C-6EB7-4464-AA16-03020858FA40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F27FDB8C-6EB7-4464-AA16-03020858FA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F27FDB8C-6EB7-4464-AA16-03020858FA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F27FDB8C-6EB7-4464-AA16-03020858FA40}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {89DDD17A-AC8A-44CC-A11B-459942DC9C95}
+	EndGlobalSection
+EndGlobal

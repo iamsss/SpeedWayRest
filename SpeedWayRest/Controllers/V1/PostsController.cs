@@ -7,41 +7,49 @@ using SpeedWayRest.Contracts;
 using SpeedWayRest.Controllers.Requests;
 using SpeedWayRest.Controllers.Responses;
 using SpeedWayRest.Domain;
+using SpeedWayRest.Services;
 
 namespace SpeedWayRest.Controllers
 {
     public class PostsController : Controller
     {
-        private List<Post> _Posts = new List<Post>();
-        public PostsController()
-        {
-            _Posts.Add(new Post("First Post"));
-            _Posts.Add(new Post("Second Post"));
-            _Posts.Add(new Post("Thrid Post"));
-            _Posts.Add(new Post("Fourth Post"));
+        private readonly IPostServices _postServices;
 
+        public PostsController(IPostServices postServices)
+        {
+            _postServices = postServices;
+        }
+        [HttpGet(ApiRoutes.Posts.GetAll)]
+        public IActionResult GetAll()
+        {
+            var posts = _postServices.GetPosts();
+            return Ok(posts);
         }
 
-        [HttpGet(ApiRoutes.Posts.GetAll)]
-        public IActionResult Index()
+        [HttpGet(ApiRoutes.Posts.Get)]
+        public IActionResult Get([FromRoute]string postId)
         {
-            return Ok(_Posts);
+            var post = _postServices.GetPostById(postId);
+            if (post == null)
+                return NotFound();
+
+            return Ok(post);
         }
 
         [HttpPost(ApiRoutes.Posts.Create)]
-        public IActionResult Index([FromBody]CreatePostRequest post)
+        public IActionResult Create([FromBody]CreatePostRequest post)
         {
-            var newPost = new Post(post.Id);
+            var newPost = new Post(post.Id,post.Name);
             if (string.IsNullOrEmpty(newPost.Id))
             {
                 newPost.Id = Guid.NewGuid().ToString();
             }
-            _Posts.Add(newPost);
+            _postServices.CreatePost(newPost);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.Posts.Get.Replace("{postId}", post.Id);
 
-            var postResponse = new CreatePostResponse() { Id = post.Id };
+            var postResponse = new CreatePostResponse() { Id = post.Id , Name = post.Name};
             return Created(locationUri, postResponse);
         }
     }

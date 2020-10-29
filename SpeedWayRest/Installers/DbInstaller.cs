@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpeedWayRest.Data;
+using SpeedWayRest.Services;
 
 namespace SpeedWayRest.Installers
 {
@@ -21,6 +22,8 @@ namespace SpeedWayRest.Installers
                     .GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<DataContext>();
+
+            services.AddSingleton<IPostServices, PostServices>();
         }
     }
 }

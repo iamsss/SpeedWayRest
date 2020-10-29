@@ -9,9 +9,11 @@ namespace SpeedWayRest.Domain
     {
 
         public string Id { get; set; }
-        public Post(string id)
+        public string Name { get; set; }
+        public Post(string id,string name)
         {
             this.Id = id;
+            this.Name = name;
         }
 
     }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SpeedWayRest.Contracts;
 using SpeedWayRest.Controllers.Requests;
 using SpeedWayRest.Controllers.Responses;
+using SpeedWayRest.Controllers.V1.Requests;
 using SpeedWayRest.Domain;
 using SpeedWayRest.Services;
 
@@ -52,5 +53,37 @@ namespace SpeedWayRest.Controllers
             var postResponse = new CreatePostResponse() { Id = post.Id , Name = post.Name};
             return Created(locationUri, postResponse);
         }
-    }
+
+        [HttpPut(ApiRoutes.Posts.Update)]
+        public IActionResult Update([FromRoute]string postId, [FromBody]UpdatePostRequest request)
+        {
+            if (string.IsNullOrEmpty(postId))
+            {
+                return BadRequest("Post Id is Empty");
+            }
+            Post updatedPost = new Post(postId, request.Name);
+            var isUpdated = _postServices.UpdatePost(updatedPost);
+            if (isUpdated)
+            {
+                return Ok(updatedPost);
+            }
+
+            return NotFound();
+        }
+
+        [HttpDelete(ApiRoutes.Posts.Delete)]
+        public IActionResult Delete([FromRoute]string postId)
+        {
+            if (string.IsNullOrEmpty(postId))
+            {
+                return BadRequest("Post Id is Empty");
+            }
+
+            var isDeleted = _postServices.DeletePost(postId);
+            if (isDeleted)
+                return NoContent();
+
+            return NotFound();
+        }
+        }
 }

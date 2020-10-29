@@ -23,6 +23,19 @@ namespace SpeedWayRest.Services
         {
             _Posts.Add(post);
         }
+
+        public bool DeletePost(string postId)
+        {
+            var post = GetPostById(postId);
+            if(post == null)
+            {
+                return false;
+            }
+
+            _Posts.Remove(post);
+            return true;
+        }
+
         public Post GetPostById(string postId)
         {
             return _Posts.Where(p => p.Id == postId).SingleOrDefault();
@@ -31,6 +44,21 @@ namespace SpeedWayRest.Services
         public List<Post> GetPosts()
         {
             return _Posts;
+        }
+
+        public bool UpdatePost(Post postToUpdate)
+        {
+            var exists = GetPostById(postToUpdate.Id) != null;
+
+            if (!exists)
+            {
+                return false;
+            }
+
+            var index = _Posts.FindIndex(x => x.Id == postToUpdate.Id);
+
+            _Posts[index] = postToUpdate;
+            return true;
         }
     }
 }

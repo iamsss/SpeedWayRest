@@ -11,5 +11,7 @@ namespace SpeedWayRest.Services
         List<Post> GetPosts();
         Post GetPostById(string postId);
         void CreatePost(Post post);
+        bool UpdatePost(Post postToUpdate);
+        bool DeletePost(string postId);
     }
 }

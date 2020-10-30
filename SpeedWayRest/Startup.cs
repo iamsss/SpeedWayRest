@@ -62,7 +62,7 @@ namespace SpeedWayRest
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

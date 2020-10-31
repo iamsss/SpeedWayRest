@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SpeedWayRest.Options;
+using SpeedWayRest.Services;
 
 namespace SpeedWayRest.Installers
 {
@@ -41,7 +42,9 @@ namespace SpeedWayRest.Installers
                 };
 
             });
-                ;
+
+            services.AddScoped<IIdentityServices, IdentityServices>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 

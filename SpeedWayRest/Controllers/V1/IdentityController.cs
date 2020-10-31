@@ -21,6 +21,13 @@ namespace SpeedWayRest.Controllers.V1
         [HttpPost(ApiRoutes.Identity.Register)]
         public async Task<IActionResult> Register([FromBody]UserRegistrationRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
+                }); ;
+            }
 
             var authResposne = await _identityServices.RegisterAsync(request.Email, request.Password);
 
@@ -29,6 +36,32 @@ namespace SpeedWayRest.Controllers.V1
                 return BadRequest(new AuthFailResponse
                 {
                     Errors =  authResposne.Errors
+                });
+            }
+            return Ok(new AuthSuccessResponse
+            {
+                Token = authResposne.Token
+            });
+        }
+
+        [HttpPost(ApiRoutes.Identity.Login)]
+        public async Task<IActionResult> Login([FromBody]UserLoginRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
+                }); ;
+            }
+
+            var authResposne = await _identityServices.LoginAsync(request.Email, request.Password);
+
+            if (!authResposne.Success)
+            {
+                return BadRequest(new AuthFailResponse
+                {
+                    Errors = authResposne.Errors
                 });
             }
             return Ok(new AuthSuccessResponse

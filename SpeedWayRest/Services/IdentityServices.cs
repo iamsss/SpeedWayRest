@@ -47,6 +47,39 @@ namespace SpeedWayRest.Services
                 };
             }
 
+            return generateAuthenticationResultForUser(newUser);
+
+         }
+
+        
+
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(email);
+
+            if (existingUser == null)
+            {
+                return new AuthenticationResult()
+                {
+                    Errors = new[] { "Login Invalid" }
+                };
+            }
+
+            var checkPass = await _userManager.CheckPasswordAsync(existingUser, password);
+
+            if (!checkPass)
+            {
+                return new AuthenticationResult()
+                {
+                    Errors = new[] { "Password not correct" }
+                };
+            }
+
+            return generateAuthenticationResultForUser(existingUser);
+
+        }
+        private AuthenticationResult generateAuthenticationResultForUser(IdentityUser newUser)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -59,7 +92,7 @@ namespace SpeedWayRest.Services
                     new Claim("Id", newUser.Id)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return new AuthenticationResult
@@ -67,6 +100,7 @@ namespace SpeedWayRest.Services
                 Success = true,
                 Token = tokenHandler.WriteToken(token)
             };
+
         }
 
     }

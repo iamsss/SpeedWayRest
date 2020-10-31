@@ -9,5 +9,7 @@ namespace SpeedWayRest.Services
     public  interface IIdentityServices
     {
         Task<AuthenticationResult> RegisterAsync(string Email, string Password);
+        Task<AuthenticationResult> LoginAsync(string Email, string Password);
+
     }
 }
